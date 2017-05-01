@@ -25,6 +25,12 @@ for i = 2: size(data_params.frame_ids, 2)
     search_area = cur_img(search_area_ymin:search_area_ymin+search_height-1,...
         search_area_xmin:search_area_xmin+search_width-1, :);
     search_col = im2col_rgb(search_area, [height width]);
+    
+%     size_search = size(search_area)
+%     size_temp = size(sub_img)
+%     size_scol = size(search_col)
+    
+%     imshowpair(search_area, sub_img, 'montage')
         
     hist_mat = zeros(size(search_col, 2), tracking_params.bin_n);
     corr_vec = [];
@@ -35,8 +41,16 @@ for i = 2: size(data_params.frame_ids, 2)
         corr_vec = [corr_vec; correlation(color_hist, N)];
     end
     
-    max_corr = max(corr_vec)
-    max_ind = find(corr_vec == max_corr)
+%     size_hist = size(hist_mat)
+%     
+%     c = normxcorr2(color_hist, hist_mat);
+%     b_max_corr = max(c(:))
+%     [ypeak, xpeak] = find(c==b_max_corr)
+%     yoffSet = ypeak-size(color_hist,1)
+%     xoffSet = xpeak-size(color_hist,2)
+    
+    max_corr = max(corr_vec);
+    max_ind = find(corr_vec == max_corr);
     
     move = search_height - height + 1;
     xmin = search_area_xmin + int32(max_ind/move);
@@ -49,6 +63,10 @@ for i = 2: size(data_params.frame_ids, 2)
 %     box_img2 = drawBox(box_img, [search_area_xmin search_area_ymin search_width search_height], [0 255 0], 3);
     figure, imshow(box_img);
     
+%     sub_image = cur_img(ymin:ymin+height-1, xmin:xmin+width-1, :);
+%     [index_sub_img, map] = rgb2ind(sub_img, tracking_params.bin_n);
+%     [color_hist, edges] = histcounts(index_sub_img, tracking_params.bin_n);
+        
 end
 
 function B = im2col_rgb(img, sz, varargin)
